@@ -18,7 +18,7 @@ export async function addLink(data: AddLinkInput) {
             ...data,
             order: data.order ?? 0,
         });
-        return { success: true, link: newLink };
+        return { success: true, link: newLink.toObject() };
     } catch (err) {
         let errorMessage = "Unknown Error";
         if (err instanceof Error) {

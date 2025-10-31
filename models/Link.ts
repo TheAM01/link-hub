@@ -17,6 +17,7 @@ const LinkSchema = new mongoose.Schema<ILink>({
     createdAt: { type: Date, default: Date.now }
 });
 
-const Link: Model<ILink> = mongoose.models.Link || mongoose.model<ILink>("link", LinkSchema);
+const Link: Model<ILink> = mongoose.models.Link as Model<ILink> || mongoose.model<ILink>("Link", LinkSchema);
+
 
 export default Link;
