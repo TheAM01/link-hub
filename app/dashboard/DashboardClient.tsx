@@ -2,7 +2,7 @@
 "use client";
 
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent, useRef } from "react";
 import { addLink, getLinksForUser, updateLink, deleteLink, ILinkInput } from "@/actions/addLink";
 import { Edit, ExternalLink, LinkIcon, Plus, Trash } from "lucide-react";
 
@@ -15,6 +15,8 @@ export default function DashboardClient() {
     const [loading, setLoading] = useState<boolean>(true);
     const [links, setLinks] = useState<Link[]>([]);
     const [editingUrl, setEditingUrl] = useState<string | null>(null);
+
+    const formRef = useRef<HTMLFormElement | null>(null);
 
 
     useEffect(() => {
@@ -89,7 +91,7 @@ export default function DashboardClient() {
                         </h2>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4" ref={formRef}>
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                                 Link Title
@@ -132,7 +134,7 @@ export default function DashboardClient() {
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Links</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {links.map((link, idx) => (
-                                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+                                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5" key={idx}>
                                     <div className="flex items-start justify-between mb-3">
                                         <h3 className="font-semibold">{link.title}</h3>
                                         <div className="flex gap-3">
@@ -164,6 +166,10 @@ export default function DashboardClient() {
                     </div>
                 )}
             </div>
+            <button onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
+                className="duration-150 fixed bottom-6 right-6 w-14 h-14 rounded-full flex justify-center items-center bg-rose-200 shadow-lg hover:shadow-sm">
+                    <Plus className="w-6 h-6"/>
+                </button>
         </div>
     );
 }

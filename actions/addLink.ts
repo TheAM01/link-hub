@@ -31,11 +31,24 @@ export interface ILinkInput {
 
 export async function addLink(data: ILinkInput) {
     await connectToDB();
-    const existing = await Link.findOne({ url: data.url });
-    if (existing) return {success: false, message: "URL already exists"};
 
-    const link = await Link.create({ ...data, createdAt: new Date() });
-    return { success: true, link: link.toObject() };
+    const exists = await Link.findOne({ url: data.url });
+    if (exists) return {success: false, message: "URL already exists"};
+
+    const doc = await Link.create({
+        ...data,
+        createdAt: new Date()
+    });
+
+    const obj = doc.toObject();
+    return {
+        success: true,
+        link: {
+            ...obj,
+            _id: obj?._id?.toString(),
+            createdAt: obj.createdAt.toISOString(),
+        }
+    };
 }
 
 // READ

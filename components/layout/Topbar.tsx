@@ -5,14 +5,14 @@ import { Bell, Search } from "lucide-react";
 
 export function Topbar() {
     return (
-        <header className="h-16 border-b bg-white/50 backdrop-blur-sm flex items-center justify-between px-6">
+        <header className="p-5 border-b bg-white/50 backdrop-blur-sm flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 max-w-2xl">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                         type="text"
                         placeholder="Search..."
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                 </div>
             </div>

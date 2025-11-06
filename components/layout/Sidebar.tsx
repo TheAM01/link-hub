@@ -18,7 +18,7 @@ export function Sidebar() {
     return (
         <aside className="w-64 border-r bg-white/50 backdrop-blur-sm flex flex-col">
             <div className="p-6 border-b">
-                <h2 className="text-xl font-semibold text-gray-900">Dashboard</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Dashboard</h2>
             </div>
             <nav className="flex-1 p-4">
                 <ul className="space-y-2">
