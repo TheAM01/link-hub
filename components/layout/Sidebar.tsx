@@ -1,13 +1,48 @@
-export default function Sidebar() {
+// Sidebar.tsx
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Link as LinkIcon, Palette, Settings, User } from "lucide-react";
+
+export function Sidebar() {
+    const pathname = usePathname();
+
+    const navItems = [
+        { name: "Manage Links", href: "/dashboard", icon: LinkIcon },
+        { name: "Theme", href: "/dashboard/theme", icon: Palette },
+        { name: "Settings", href: "/dashboard/settings", icon: Settings },
+        { name: "User Data", href: "/dashboard/user-data", icon: User },
+    ];
+
     return (
-        <div className="flex flex-1 flex-col bg-rose-100 w-max min-h-screen">
-            <div className="text-2xl text-rose-300 p-3">LinkHub</div>
-            <div className="flex flex-col gap-2 p-2">
-                <div className="rounded-md transition-all duration-200 cursor-pointer w-full text-sm p-4 text-neutral-400 hover:bg-rose-400 hover:text-gray-700">All Links</div>
-                <div className="rounded-md transition-all duration-200 cursor-pointer w-full text-sm p-4 text-neutral-400 hover:bg-rose-400 hover:text-gray-700">Analytics</div>
-                <div className="rounded-md transition-all duration-200 cursor-pointer w-full text-sm p-4 text-neutral-400 hover:bg-rose-400 hover:text-gray-700">Theme</div>
-                <div className="rounded-md transition-all duration-200 cursor-pointer w-full text-sm p-4 text-neutral-400 hover:bg-rose-400 hover:text-gray-700">Settings</div>
+        <aside className="w-64 border-r bg-white/50 backdrop-blur-sm flex flex-col">
+            <div className="p-6 border-b">
+                <h2 className="text-xl font-semibold text-gray-900">Dashboard</h2>
             </div>
-        </div>
-    )
+            <nav className="flex-1 p-4">
+                <ul className="space-y-2">
+                    {navItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        const Icon = item.icon;
+                        return (
+                            <li key={item.href}>
+                                <Link
+                                    href={item.href}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                                        isActive
+                                            ? "bg-blue-50 text-blue-600 font-medium"
+                                            : "text-gray-700 hover:bg-gray-50"
+                                    }`}
+                                >
+                                    <Icon className="w-5 h-5" />
+                                    <span>{item.name}</span>
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </nav>
+        </aside>
+    );
 }

@@ -1,22 +1,19 @@
-import "../globals.css";
-// import Sidebar from "@/components/layout/Sidebar";
+// Layout.tsx (how to use these components)
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Topbar } from "@/components/layout/Topbar";
 
 export default function DashboardLayout({
     children,
-}: Readonly<{
+}: {
     children: React.ReactNode;
-}>) {
+}) {
     return (
-        <html lang="en">
-            <body
-                className={` antialiased flex`}
-            >
-                {/* <Sidebar/> */}
-                <div className="flex flex-1">
-                    {children}
-                </div>
-            </body>
-        </html>
+        <div className="flex h-screen">
+            <Sidebar />
+            <div className="flex-1 flex flex-col">
+                <Topbar />
+                {children}
+            </div>
+        </div>
     );
 }
-// ${geistSans.variable} ${geistMono.variable}

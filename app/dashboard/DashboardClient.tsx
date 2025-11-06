@@ -1,11 +1,30 @@
+// DashboardClient.tsx
 "use client";
 
-import { addLink } from "@/actions/addLink";
-import { useState, FormEvent, use } from "react";
+
+import { useEffect, useState, FormEvent } from "react";
+import { addLink, getLinksForUser, updateLink, deleteLink, ILinkInput } from "@/actions/addLink";
+import { Edit, ExternalLink, LinkIcon, Plus, Trash } from "lucide-react";
+
+interface Link {
+    title: string;
+    url: string;
+}
 
 export default function DashboardClient() {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [links, setLinks] = useState<Link[]>([]);
+    const [editingUrl, setEditingUrl] = useState<string | null>(null);
 
-    const [links, setLinks] = useState<{ title: string; url: string; }[]>([])
+
+    useEffect(() => {
+        const fetchLinks = async () => {
+            const data = await getLinksForUser();
+            setLinks(data);
+            setLoading(false);
+        }
+        void fetchLinks();
+    }, [])
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -14,46 +33,138 @@ export default function DashboardClient() {
         const title = (form.elements.namedItem("title") as HTMLInputElement).value;
         const url = (form.elements.namedItem("url") as HTMLInputElement).value;
 
-        const result = await addLink({ title, url });
+        if (editingUrl) {
+            const result = await updateLink(editingUrl, { title, url });
 
-        if (result.success) {
-            alert(`Link added: ${result?.link?.title}!`);
-            setLinks([...links, { title, url }]);
-            form.reset();
+            if (result.success) {
+                setLinks(links.map(l => l.url === editingUrl ? { title, url} : l));
+                setEditingUrl(null);
+                form.reset();
+            }
         } else {
-            alert("There was an error");
+            const result = await addLink({ title, url });
+
+            if (result.success) {
+                alert(`Link added: ${result?.link?.title}!`);
+                setLinks([...links, { title, url }]);
+                form.reset();
+            } else {
+                alert("There was an error");
+            }
         }
+
+        
     }
 
+    const handleEdit = (link: Link) => {
+        setEditingUrl(link.url);
+        const form = document.querySelector<HTMLFormElement>("form");
+
+        if (!form) return;
+
+        (form.elements.namedItem("title") as HTMLInputElement).value = link.title;
+        (form.elements.namedItem("url") as HTMLInputElement).value = link.url;
+    }
+
+    const handleDelete = async (url: string) => {
+        await deleteLink(url);
+        setLinks(links.filter(l => l.url !== url));
+    }
+
+    if (loading) return <div className="flex flex-1 justify-center items-center">Loading</div>
 
     return (
-        <div className="flex flex-col flex-1 bg-stone-900 h-screen items-center justify-center gap-6">
+        <div className="flex-1 p-8 overflow-auto">
+            <div className="max-w-6xl mx-auto space-y-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Links</h1>
+                    <p className="text-gray-600">Add and organize your important links</p>
+                </div>
 
-            <form onSubmit={handleSubmit} className="gap-4 p-4 flex flex-col bg-stone-800 border border-stone-700">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center gap-2 mb-6">
+                        <Plus className="w-5 h-5 text-gray-700" />
+                        <h2 className="text-xl font-semibold text-gray-900">
+                            {editingUrl ? "Edit Link" : "Add New Link"}
+                        </h2>
+                    </div>
 
-                <div className="text-2xl text-white">Add New Link</div>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                                Link Title
+                            </label>
+                            <input
+                                type="text"
+                                name="title"
+                                id="title"
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Enter link title"
+                                required
+                            />
+                        </div>
 
-                <input type="text" name="title" id="" className="bg-stone-700 border border-stone-600 p-2 placeholder:italic text-white outline-0" placeholder="Link Title" required/>
-                <input type="url" name="url" id="" className="bg-stone-700 border border-stone-600 p-2 placeholder:italic text-white outline-0" placeholder="Link URL"  required/>
+                        <div>
+                            <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
+                                Link URL
+                            </label>
+                            <input
+                                type="url"
+                                name="url"
+                                id="url"
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="https://example.com"
+                                required
+                            />
+                        </div>
 
-                <button className="p-2 bg-stone-600 border border-stone-500"  type="submit">
-                    Submit
-                </button>
-            </form>
+                        <button
+                            className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            type="submit"
+                        >
+                            { editingUrl ? "Update Link" : "Add Link"}
+                        </button>
+                    </form>
+                </div>
 
+                {links.length > 0 && (
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Links</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {links.map((link, idx) => (
+                                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+                                    <div className="flex items-start justify-between mb-3">
+                                        <h3 className="font-semibold">{link.title}</h3>
+                                        <div className="flex gap-3">
+                                            <button onClick={() => handleEdit(link)}>
+                                                <Edit className="w-4 h-4 text-gray-400"/>
+                                            </button>
+                                            <button onClick={() => handleDelete(link.url)}>
+                                                <Trash className="w-4 h-4 text-gray-400"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-gray-500 truncate"
+                                    >{link.url}</a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-            <div className="bg-stone-800 border border-stone-800 flex flex-wrap p-4 gap-4">
-                {
-                    links.map((link, idx) => (
-                        <a className="bg-stone-700 border border-stone-600 p-2 flex flex-col gap-2 duration-200 hover:shadow-sm shadow-white" href={link.url}>
-                            
-                            <span className="text-sm text-white">Link Title: <span className="text-rose-500 ">{link.title}</span></span>
-                            <span className="text-sm text-white">Link URL: <span className="text-rose-500 underline">{link.url}</span></span>
-                        </a>
-                    ))
-                }
+                {links.length === 0 && (
+                    <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
+                        <LinkIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No links yet</h3>
+                        <p className="text-gray-600">Add your first link using the form above</p>
+                    </div>
+                )}
             </div>
-
         </div>
-    )
+    );
 }
+
