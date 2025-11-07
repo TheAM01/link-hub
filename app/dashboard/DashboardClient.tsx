@@ -3,7 +3,7 @@
 
 
 import { useEffect, useState, FormEvent, useRef } from "react";
-import { addLink, getLinksForUser, updateLink, deleteLink, ILinkInput } from "@/actions/addLink";
+import { createLink, getLinksForUser, updateLink, deleteLink, ILinkInput } from "@/actions/links";
 import { Edit, ExternalLink, LinkIcon, Plus, Trash } from "lucide-react";
 
 interface Link {
@@ -44,7 +44,7 @@ export default function DashboardClient() {
                 form.reset();
             }
         } else {
-            const result = await addLink({ title, url });
+            const result = await createLink({ title, url });
 
             if (result.success) {
                 alert(`Link added: ${result?.link?.title}!`);
