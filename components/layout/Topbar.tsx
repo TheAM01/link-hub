@@ -1,9 +1,27 @@
 // Topbar.tsx
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import { Bell, ExternalLink, Search } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getUser } from "@/actions/getUser";
 
 export function Topbar() {
+
+    const [username, setUsername] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function fetchUsername() {
+            try {
+                const u = await getUser();
+                setUsername(u?.username ?? null);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        void fetchUsername()
+    }, [])
+
     return (
         <header className="p-5 border-b border-stone-300 bg-stone-900 backdrop-blur-sm flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 max-w-2xl">
@@ -17,6 +35,12 @@ export function Topbar() {
                 </div>
             </div>
             <div className="flex items-center gap-4">
+                {username && 
+                    <Link href={`/u/${username}`} className="flex items-center gap-1 rounded-sm px-2 py-1 bg-rose-500 text-sm text-white hover:bg-rose-700 hover:rounded-lg duration-150">
+                        Visit Page
+                        <ExternalLink size={14}/>
+                    </Link>
+                }
                 <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
                     <Bell className="w-5 h-5 text-gray-200" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>

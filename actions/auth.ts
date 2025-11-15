@@ -13,7 +13,7 @@ export async function signup({ username, password }: { username: string; passwor
     if (exists) return { success: false, error: "Username already taken." };
 
     const hashed = await bcrypt.hash(password, 10);
-    await User.create({ username, password: hashed });
+    await User.create({ username, password: hashed, fullName: "Default User" });
 
     return { success: true };
 }
