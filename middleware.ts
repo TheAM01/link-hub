@@ -8,7 +8,7 @@ const PUBLIC_PATHS = ["/", "/auth/login", "/auth/signup"]; // Added signup
 export function middleware(req: NextRequest) {
     const token = req.cookies.get("token")?.value;
     const path = req.nextUrl.pathname;
-    console.log(token)
+    
     // Public routes = allowed to pass
     if (PUBLIC_PATHS.includes(path)) return NextResponse.next();
 

@@ -23,7 +23,7 @@ export function Topbar() {
     }, [])
 
     return (
-        <header className="p-5 border-b border-stone-300 bg-stone-900 backdrop-blur-sm flex items-center justify-between">
+        <header className="sticky top-0 p-5 border-b border-stone-300 bg-stone-900 backdrop-blur-sm flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 max-w-2xl">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />

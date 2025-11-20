@@ -10,9 +10,11 @@ export default function DashboardLayout({
     return (
         <div className="flex h-screen">
             <Sidebar />
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 max-h-screen overflow-y-auto flex flex-col">
                 <Topbar />
-                {children}
+                <div className="flex-1 max-h-screen overflow-y-auto flex flex-col">
+                    {children}
+                </div>
             </div>
         </div>
     );

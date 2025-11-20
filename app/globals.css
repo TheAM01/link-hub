@@ -22,3 +22,6 @@ html, body {
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
+.text-neon-pink { color: #ff00ff; }
+.border-neon-blue { border-color: #00eaff; }

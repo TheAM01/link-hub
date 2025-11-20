@@ -130,9 +130,9 @@ export default function DashboardClient() {
                 </div>
 
                 {links.length > 0 && (
-                    <div>
+                    <div className="">
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Links</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-4">
                             {links.map((link, idx) => (
                                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5" key={idx}>
                                     <div className="flex items-start justify-between mb-3">

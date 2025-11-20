@@ -3,7 +3,11 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-export async function getUser() {
+interface GetUserReturnType {
+    username: string;
+}
+
+export async function getUser(): Promise<GetUserReturnType | null> {
     const cookieStore = await cookies(); // yes, we now wait to read a cookie, welcome to 2025
     const token = cookieStore.get("token")?.value;
 

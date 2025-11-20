@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Link as LinkIcon, Palette, Settings, User } from "lucide-react";
+import { BarChart, Link as LinkIcon, Palette, Settings } from "lucide-react";
 
 export function Sidebar() {
     const pathname = usePathname();
@@ -12,7 +12,7 @@ export function Sidebar() {
         { name: "Manage Links", href: "/dashboard", icon: LinkIcon },
         { name: "Theme", href: "/dashboard/theme", icon: Palette },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
-        { name: "User Data", href: "/dashboard/user-data", icon: User },
+        { name: "Analytics", href: "/dashboard/analytics", icon: BarChart },
     ];
 
     return (
